@@ -1,0 +1,11 @@
+syntax="proto3";
+package pb;
+option go_package = "./pb";
+
+message TestReq{
+  string Req = 1;
+}
+
+message TestRsp{
+  string Rsp = 2;
+}
