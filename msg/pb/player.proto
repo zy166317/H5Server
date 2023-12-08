@@ -1,0 +1,24 @@
+syntax="proto3";
+package pb;
+option go_package = "./pb";
+
+
+message Player{
+  string Uid = 1;
+  map<int32,int32> BallPack = 2;//挡板背包 key：挡板id value：统一为1
+  map<int32,int32> CheckPointRecord = 3;//通关记录
+  map<int32,bool> LoginDays = 4;//连续登录
+}
+
+
+//登录 没有直接创建
+message LoginReq{
+  string Uid = 1;
+  string InviteUid = 2;//邀请者uid
+}
+
+message LoginRsp{
+  int32 Code = 1;
+  Player PlayerInfo = 2;//玩家信息
+}
+

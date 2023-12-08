@@ -1,0 +1,31 @@
+syntax="proto3";
+package pb;
+option go_package = "./pb";
+
+
+//关卡挑战
+message ChallengeChapterReq{
+  int32 ChapterId = 1;//关卡id
+  int32 Stars = 2;//星级
+}
+
+message ChallengeChapterRsp{
+  int32 Code = 1;
+  int32 GoldNum = 2;//金币奖励，这个字段用来弹窗奖励
+  int32 CurrGoldNum = 3;//这个是当前金币数量，直接用来覆盖
+  map<int32,int32> ChapterRecords = 4;//通过关卡记录，直接覆盖
+}
+
+//使用道具
+message UsePropsReq{
+  int32 PropId = 1;
+}
+
+message UsePropsRsp{
+  int32 Code = 1;
+  int32 CurrGoldNum = 2;//当前剩余金币数量
+}
+
+message NoticeChapterRecords{
+  map<int32,int32> ChapterRecords = 1;
+}

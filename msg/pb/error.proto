@@ -1,0 +1,16 @@
+syntax="proto3";
+package pb;
+option go_package = "./pb";
+
+
+
+enum Error{
+  TestErr = 0;
+  No = 1;//正常返回
+  Req = 2;//请求参数错误
+  PlayerCreate = 3;//玩家创建失败
+  Mysql = 4;//数据库错误
+  ChapterLimit = 5;//传入关卡大于可闯关卡
+  GoldNotEnough = 6;//金币不足
+  CreateRole = 7;//创角失败
+}

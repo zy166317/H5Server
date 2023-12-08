@@ -23,8 +23,8 @@ func (m *Module) OnInit() {
 		KeyFile:         conf.Server.KeyFile,
 		TCPAddr:         conf.Server.TCPAddr,
 		LenMsgLen:       conf.LenMsgLen,
-		LittleEndian:    conf.LittleEndian,
-		Processor:       msg.Processor,
+		LittleEndian:    false,
+		Processor:       msg.ProtocolProcessor,
 		AgentChanRPC:    game.ChanRPC,
 	}
 }

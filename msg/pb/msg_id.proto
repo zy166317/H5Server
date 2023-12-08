@@ -1,0 +1,21 @@
+syntax="proto3";
+package pb;
+option go_package = "./pb";
+
+
+//enum Action{
+//    SocketPingReq=0;//socket连接测试
+//    SocketPingRsp=1;
+//    EditorChapterReq = 2;//编辑关卡
+//    EditorChapterRsp = 3;
+//    GetAllChapterReq = 4;//获取当前所有关卡
+//    GetAllChapterRsp = 5;
+//    ChapterDetailByIdReq = 6;//关卡详情
+//    ChapterDetailByIdRsp = 7;
+//    LoginReq = 8;//登录
+//    LoginRsp = 9;
+//    ChallengeChapterReq = 10;//闯关
+//    ChallengeChapterRsp = 11;
+//    UsePropsReq = 12;//使用道具
+//    UsePropsRsp = 13;
+//}

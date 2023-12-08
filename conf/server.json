@@ -1,7 +1,7 @@
 {
 	"LogLevel": "debug",
 	"LogPath": "",
-	"WSAddr": "127.0.0.1:8082",
+	"WSAddr": "192.168.204.67:8899",
 	"MaxConnNum": 20000,
 	"ConsolePort":20001,
 	"ConfPath": "../../bin/xls/",

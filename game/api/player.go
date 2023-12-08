@@ -1,14 +1,29 @@
 package api
 
-import "leaf_server/db"
+import (
+	"github.com/name5566/leaf/gate"
+	"leaf_server/db"
+	"leaf_server/util"
+)
 
 type Player struct {
-	DbPlayer   *db.Player
-	LoginDays  []int32         //连续登录
-	RedeemCode map[string]bool //兑换码
-	BackPack   map[int32]int32 //道具背包
+	Agent             gate.Agent
+	DbPlayer          *db.Player
+	ChallengeInfo     Challenge
+	BallPack          map[int32]int32
+	CheckPointRecords map[int32]int32
+	LoginDay          map[int32]bool
 }
 
-func (p *Player) CreateRole() {
+func NewPlayer(player *db.Player, a gate.Agent) *Player {
+	return &Player{
+		Agent:    a,
+		DbPlayer: player,
+	}
+}
 
+func (p *Player) LoadData() {
+	util.ConvertString2Structure(p.DbPlayer.BallPack, &p.BallPack)
+	util.ConvertString2Structure(p.DbPlayer.CheckPointRecord, &p.CheckPointRecords)
+	util.ConvertString2Structure(p.DbPlayer.LoginDays, &p.LoginDay)
 }

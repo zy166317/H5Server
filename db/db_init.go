@@ -15,5 +15,7 @@ func Init(mycfg *Mysql) error {
 }
 
 func autoMigrate() error {
-	return DBC.AutoMigrate(&Player{})
+	return DBC.AutoMigrate(&Player{},
+		&Chapter{},
+	)
 }

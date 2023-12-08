@@ -1,0 +1,5 @@
+id	所属组id	服务器地址	支付通知地址	服务器状态 1新服，2爆满	服务器名称	服务器开启时间	地址
+int	int	string	string	int	string	int	string
+id	groupid	serverip	paynoticecelp	state	name	time	address
+1	1001	"wss://game-zjdc.yayawan.com/wss1/:80"	"http://120.79.211.248:8190/TopUp"	1	"小程序服1"	1693792800	"http://120.79.211.248:8190"
+

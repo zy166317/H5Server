@@ -3,6 +3,7 @@ package common
 import (
 	"github.com/name5566/leaf/log"
 	"github.com/name5566/leaf/recordfile"
+	"leaf_server/gamedata"
 	"sync"
 )
 
@@ -18,62 +19,7 @@ var (
 
 // 表名配置id
 const (
-	GLOBAL_CONFIG = iota
-	ATTRIBUTE
-	BLUE_PRINT
-	CHALLENGE_BOSS
-	CHAPTER
-	COMBAT_MODEL
-	EFFECT_MODEL
-	EQUIP_RANDOM
-	FLIGHT_MAP
-	GEM
-	GEM_RULE
-	ITEM
-	KUNGFU
-	MAIN_TASK
-	MONSTER
-	MYTHICS
-	MYTHICS_GROUP
-	MYTHICS_MAP
-	NATURE_TALISMAN
-	NATURE_TALISMAN_POWER
-	NATURE_TALISMAN_UPGRADE
-	REALM
-	ROLE_LEVEL
-	SKILL_MODEL
-	SOUND_EFFECT
-	STORY_MAIN
-	STORY_RANDOM
-	STORY_RHYTHM
-	TALLY
-	TALLY_ATLAS
-	TALLY_BAIT
-	TALLY_BOX
-	TALLY_EQUIP
-	TALLY_FETTER
-	TALLY_ORDER_TASK
-	TALLY_TASK
-	TALLY_TASK_GROUP
-	TALLY_TYPE
-	TRIPOD_BOX
-	CORE_TEST
-	REALM_TASK
-	GRASS
-	PRESCRIPT
-	SHOP_GOODS
-	ALCHEMY
-	TALLY_SCENE
-	ARENA_MATE
-	ARENA_INTEGRAL
-	ARENA_INTEGRAL2
-	AREBA_DAILY_RANK_REWARD
-	ARENA_RANK_REWARD
-	SHOP
-	ACTIVITY_TASKS
-	LOOT
-	DIARY
-	MARKET
+	SERVER_LIST = iota
 )
 
 // 配置注册初始化
@@ -81,7 +27,7 @@ const (
 func ConfigInit() {
 	configs = make(map[int]*Config)
 	configType = make(map[int]interface{})
-	//RegisterCf(GEM, gamedata.Gem{})
+	RegisterCf(SERVER_LIST, gamedata.ServerList{})
 }
 
 // @desc: 获取配置文件
