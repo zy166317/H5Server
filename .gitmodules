@@ -1,0 +1,3 @@
+[submodule "msg/pb"]
+	path = msg/pb
+	url = https://github.com/zy166317/proto-ball.git
