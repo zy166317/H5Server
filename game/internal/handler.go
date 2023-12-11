@@ -9,16 +9,26 @@ import (
 )
 
 func Init() {
-	handler(&pb.SocketPingReq{}, handleSocketConn)
-	handler(&pb.EditorChapterReq{}, handleEditorChapter)
-	handler(&pb.GetAllChapterReq{}, handleGetAllChapter)
-	handler(&pb.ChapterDetailByIdReq{}, handleChapterDetail)
-	handler(&pb.ChallengeChapterReq{}, handleChallengeChapter)
-	handler(&pb.UsePropsReq{}, handleUseProps)
+	initGmChapter() //GM设置设置关卡地图
+	initGame()      //闯关逻辑
 }
 
 func handler(m interface{}, h interface{}) {
 	skeleton.RegisterChanRPC(reflect.TypeOf(m), h)
+}
+
+// gm关卡设计
+func initGmChapter() {
+	handler(&pb.SocketPingReq{}, handleSocketConn)
+	handler(&pb.EditorChapterReq{}, handleEditorChapter)
+	handler(&pb.GetAllChapterReq{}, handleGetAllChapter)
+	handler(&pb.ChapterDetailByIdReq{}, handleChapterDetail)
+}
+
+// 闯关逻辑
+func initGame() {
+	handler(&pb.ChallengeChapterReq{}, handleChallengeChapter)
+	handler(&pb.UsePropsReq{}, handleUseProps)
 }
 
 func handleSocketConn(args []interface{}) {
