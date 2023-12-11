@@ -48,6 +48,7 @@ func main() {
 		return
 	}
 	RunGlobalFunction()
+	//pprof
 	go func() {
 		http2.ListenAndServe("localhost:6060", nil)
 	}()
@@ -60,7 +61,7 @@ func main() {
 	)
 }
 
-// RunGlobalFunction 加载其余功能模块
+// RunGlobalFunction 加载启动全局业务
 func RunGlobalFunction() {
 	//http.InitHttpService("192.168.204.67:9999")
 }
