@@ -6,7 +6,6 @@ import (
 	"leaf_server/db"
 	"leaf_server/proto/pb"
 	"leaf_server/util"
-	"time"
 )
 
 // EditorChapterAdd 新增关卡
@@ -20,11 +19,9 @@ func EditorChapterAdd(a gate.Agent, req *pb.EditorChapterReq) {
 		Tps = append(Tps, v.Type)
 	}
 	err := db.DBC.Create(&db.Chapter{
-		Pos:       util.ToString(pos),
-		Color:     util.ToString(color),
-		Types:     util.ToString(Tps),
-		CreatedAt: time.Time{},
-		UpdatedAt: time.Time{},
+		Pos:   util.ToString(pos),
+		Color: util.ToString(color),
+		Types: util.ToString(Tps),
 	}).Error
 	if err != nil {
 		log.Release("create ball error ", err)
@@ -67,7 +64,7 @@ func GetAllChapter(a gate.Agent, req *pb.GetAllChapterReq) {
 	}
 	chapterIds := make([]int32, 0)
 	for _, v := range chapters {
-		chapterIds = append(chapterIds, int32(v.Id))
+		chapterIds = append(chapterIds, int32(v.ID))
 
 	}
 	a.WriteMsg(&pb.GetAllChapterRsp{
