@@ -102,5 +102,6 @@ func GetChapterById(a gate.Agent, req *pb.ChapterDetailByIdReq) {
 		Code:      int32(pb.Error_No),
 		Info:      &pb.ChapterDetail{Info: pbInfo},
 		ChapterId: req.ChapterId,
+		Tp:        req.Tp,
 	})
 }

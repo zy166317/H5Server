@@ -25,10 +25,12 @@ func initGmChapter() {
 	handler(&pb.ChapterDetailByIdReq{}, handleChapterDetail)
 }
 
-// 闯关逻辑
+// 游戏逻辑
 func initGame() {
 	handler(&pb.ChallengeChapterReq{}, handleChallengeChapter)
 	handler(&pb.UsePropsReq{}, handleUseProps)
+	handler(&pb.SevenDaysRewardReq{}, handleSevenDayRewards)
+	handler(&pb.StarsRankListReq{}, handleStarsRankList)
 }
 
 func handleSocketConn(args []interface{}) {
@@ -79,4 +81,18 @@ func handleUseProps(args []interface{}) {
 	a := args[1].(gate.Agent)
 	p := a.UserData().(*api.Player)
 	api.CMgr.UseProps(p, req)
+}
+
+func handleSevenDayRewards(args []interface{}) {
+	_ = args[0].(*pb.SevenDaysRewardReq)
+	a := args[1].(gate.Agent)
+	p := a.UserData().(*api.Player)
+	api.PlayerMgr.SevenDaysLogin(p)
+}
+
+func handleStarsRankList(args []interface{}) {
+	req := args[0].(*pb.StarsRankListReq)
+	a := args[1].(gate.Agent)
+	p := a.UserData().(*api.Player)
+	api.PlayerMgr.StarsRankList(p, req)
 }

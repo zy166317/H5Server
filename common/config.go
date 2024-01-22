@@ -19,7 +19,12 @@ var (
 
 // 表名配置id
 const (
-	SERVER_LIST = iota
+	CHAPTER_STARS = iota
+	ITEM
+	LOOT
+	BALL
+	BAFFLE
+	LOGIN_SEVEN_DAY
 )
 
 // 配置注册初始化
@@ -27,7 +32,12 @@ const (
 func ConfigInit() {
 	configs = make(map[int]*Config)
 	configType = make(map[int]interface{})
-	RegisterCf(SERVER_LIST, gamedata.ServerList{})
+	RegisterCf(CHAPTER_STARS, gamedata.Chapter_stars{})
+	RegisterCf(ITEM, gamedata.Item{})
+	RegisterCf(LOOT, gamedata.Loot{})
+	RegisterCf(BALL, gamedata.Ball{})
+	RegisterCf(BAFFLE, gamedata.Baffle{})
+	RegisterCf(LOGIN_SEVEN_DAY, gamedata.Login_seven_day{})
 }
 
 // @desc: 获取配置文件

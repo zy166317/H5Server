@@ -11,8 +11,8 @@ dbGame:
   address: 127.0.0.1:3306
   dbName: ball
   connMaxLifeTime: 3600
-  maxIdleConnNum: 1
-  maxOpenConnNum: 1
+  maxIdleConnNum: 20
+  maxOpenConnNum: 20
 dbRedis:
   host: 127.0.0.1
   port: 6379

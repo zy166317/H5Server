@@ -17,7 +17,7 @@ func ConvertString2Structure(s string, v interface{}) error {
 		return nil
 	}
 	if err := json.Unmarshal([]byte(s), v); err != nil {
-		log.Error("ConvertString2Structure error:%+v", err)
+		log.Error("ConvertString2Structure error:%+v", err, v)
 		return err
 	}
 	return nil

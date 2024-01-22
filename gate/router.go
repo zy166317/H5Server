@@ -29,4 +29,6 @@ func initGM() {
 func initGame() {
 	msg.ProtocolProcessor.SetRouter(&pb.ChallengeChapterReq{}, game.ChanRPC)
 	msg.ProtocolProcessor.SetRouter(&pb.UsePropsReq{}, game.ChanRPC)
+	msg.ProtocolProcessor.SetRouter(&pb.SevenDaysRewardReq{}, game.ChanRPC)
+	msg.ProtocolProcessor.SetRouter(&pb.StarsRankListReq{}, game.ChanRPC)
 }

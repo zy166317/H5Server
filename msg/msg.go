@@ -34,10 +34,15 @@ func initLogin() {
 	ProtocolProcessor.Register(&pb.LoginRsp{})
 }
 
-// 闯关模块
+// 游戏模块
 func initChallengeChapter() {
 	ProtocolProcessor.Register(&pb.ChallengeChapterReq{})
 	ProtocolProcessor.Register(&pb.ChallengeChapterRsp{})
 	ProtocolProcessor.Register(&pb.UsePropsReq{})
 	ProtocolProcessor.Register(&pb.UsePropsRsp{})
+	ProtocolProcessor.Register(&pb.SevenDaysRewardReq{})
+	ProtocolProcessor.Register(&pb.SevenDaysRewardRsp{})
+	ProtocolProcessor.Register(&pb.NoticePropsChange{})
+	ProtocolProcessor.Register(&pb.StarsRankListReq{})
+	ProtocolProcessor.Register(&pb.StarsRankListRsp{})
 }

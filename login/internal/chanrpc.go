@@ -17,4 +17,5 @@ func rpcNewAgent(args []interface{}) {
 }
 
 func rpcCloseAgent(args []interface{}) {
+
 }
