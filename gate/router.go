@@ -31,4 +31,12 @@ func initGame() {
 	msg.ProtocolProcessor.SetRouter(&pb.UsePropsReq{}, game.ChanRPC)
 	msg.ProtocolProcessor.SetRouter(&pb.SevenDaysRewardReq{}, game.ChanRPC)
 	msg.ProtocolProcessor.SetRouter(&pb.StarsRankListReq{}, game.ChanRPC)
+	msg.ProtocolProcessor.SetRouter(&pb.SwitchBafflePlateReq{}, game.ChanRPC)
+	msg.ProtocolProcessor.SetRouter(&pb.GMReq{}, game.ChanRPC)
+	msg.ProtocolProcessor.SetRouter(&pb.GameCollectPropsReq{}, game.ChanRPC)
+	msg.ProtocolProcessor.SetRouter(&pb.ShopBuyingReq{}, game.ChanRPC)
+	msg.ProtocolProcessor.SetRouter(&pb.YesterdayRankReq{}, game.ChanRPC)
+	msg.ProtocolProcessor.SetRouter(&pb.ReceiveRankRewardReq{}, game.ChanRPC)
+	msg.ProtocolProcessor.SetRouter(&pb.WatchAdvRewardsReq{}, game.ChanRPC)
+
 }

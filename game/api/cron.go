@@ -18,8 +18,8 @@ func CronInit() {
 	c := cron.New(cron.WithSeconds())
 	CronTimer = c
 	//添加定时任务
-	c.AddFunc("", func() {
-
+	c.AddFunc("0 0 0 * * ?", func() {
+		SettleRank()
 	})
 	c.Run()
 }

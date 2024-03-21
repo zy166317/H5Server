@@ -1,6 +1,6 @@
 第几天	奖励道具	奖励数量	说明
 int	array[int]	array[int]	string
-id	rewardprops	rewardcount	instruction
+id	rewardprops	rewardcounts	instruction
 1	[10000]	[100]	""
 2	[10000]	[100]	""
 3	[10000]	[100]	""

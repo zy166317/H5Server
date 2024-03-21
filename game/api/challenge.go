@@ -12,6 +12,12 @@ type Challenge struct {
 
 // ChallengeChapter 挑战关卡
 func (c *Challenge) ChallengeChapter(p *Player, req *pb.ChallengeChapterReq) {
+	if p.BackPack[p.DbPlayer.CurrPlate] == 0 {
+		p.Agent.WriteMsg(&pb.ChallengeChapterRsp{
+			Code: int32(pb.Error_ChapterLimit),
+		})
+		return
+	}
 	if int(req.ChapterId) > len(p.CheckPointRecords)+1 {
 		p.Agent.WriteMsg(&pb.ChallengeChapterRsp{
 			Code: int32(pb.Error_ChapterLimit),
@@ -29,27 +35,36 @@ func (c *Challenge) ChallengeChapter(p *Player, req *pb.ChallengeChapterReq) {
 	rewards := make(map[int32]int32)
 	for k, v := range chapterStars.Star {
 		if req.CompleteTime >= int32(v[0]) && req.CompleteTime <= int32(v[1]) {
-			rewards[100000] += int32(chapterStars.Pos[k])
+			for _, v1 := range chapterStars.Rewards {
+				rewards[int32(v1[0])] += int32(v1[1])
+				p.BackPack[int32(v1[0])] += int32(v1[1])
+			}
 			p.CheckPointRecords[req.ChapterId] = int32(k + 1)
-			p.DbPlayer.Gold += int32(chapterStars.Pos[k])
 			break
 		}
 	}
+	p.BackPack[p.DbPlayer.CurrPlate] -= 1
 	//添加或更新关卡星级
 	p.Agent.WriteMsg(&pb.ChallengeChapterRsp{
 		Code:           int32(pb.Error_No),
 		Rewards:        rewards,
 		ChapterRecords: p.CheckPointRecords,
-	})
-	p.Agent.WriteMsg(&pb.NoticePropsChange{
-		Gold:     p.DbPlayer.Gold,
-		Backpack: p.BackPack,
+		BackPack:       p.BackPack,
 	})
 	db.UpdatePlayerStars(c.CalcAllStars(p.CheckPointRecords), p.DbPlayer.Uid)
 }
 
 // UseProps 使用道具
 func (c *Challenge) UseProps(p *Player, req *pb.UsePropsReq) {
+	if p.BackPack[req.PropId] > 0 {
+		p.BackPack[req.PropId] -= 1
+		p.Agent.WriteMsg(&pb.UsePropsRsp{
+			Code:     int32(pb.Error_No),
+			Backpack: p.BackPack,
+			PropId:   req.PropId,
+		})
+		return
+	}
 	//当前没配置表 忽略判断
 	index := common.GetCf(common.ITEM).Index(int(req.PropId))
 	if index == nil {
@@ -59,16 +74,16 @@ func (c *Challenge) UseProps(p *Player, req *pb.UsePropsReq) {
 		return
 	}
 	item := index.(*gamedata.Item)
-	if p.DbPlayer.Gold < int32(item.Price[1]) {
+	if p.BackPack[int32(item.Price[0])] < int32(item.Price[1]) {
 		p.Agent.WriteMsg(&pb.UsePropsRsp{
 			Code: int32(pb.Error_GoldNotEnough),
 		})
 		return
 	}
-	p.DbPlayer.Gold -= int32(item.Price[1])
+	p.BackPack[int32(item.Price[0])] -= int32(item.Price[1])
 	p.Agent.WriteMsg(&pb.UsePropsRsp{
-		Code:        int32(pb.Error_No),
-		CurrGoldNum: p.DbPlayer.Gold,
+		Code:     int32(pb.Error_No),
+		Backpack: p.BackPack,
 	})
 }
 
@@ -79,4 +94,13 @@ func (c *Challenge) CalcAllStars(records map[int32]int32) int {
 		stars += int(v)
 	}
 	return stars
+}
+
+func (c *Challenge) CollectProps(p *Player, req *pb.GameCollectPropsReq) {
+	p.BackPack[req.PropId] += 1
+	p.Agent.WriteMsg(&pb.GameCollectPropsRsp{
+		Code:     int32(pb.Error_No),
+		Backpack: p.BackPack,
+		PropId:   req.PropId,
+	})
 }

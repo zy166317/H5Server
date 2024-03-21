@@ -8,6 +8,8 @@ import (
 	"leaf_server/gamedata"
 	"leaf_server/proto/pb"
 	"leaf_server/util"
+	"strconv"
+	"time"
 )
 
 type Player struct {
@@ -61,8 +63,8 @@ func (p *Player) SevenDaysLogin() {
 			}
 			sevenDay := index.(*gamedata.Login_seven_day)
 			for k1, v1 := range sevenDay.Rewardprops {
-				rewards[int32(v1)] += int32(sevenDay.Rewardcount[k1])
-				p.AddProps(int32(v1), int32(sevenDay.Rewardcount[k1]))
+				rewards[int32(v1)] += int32(sevenDay.Rewardcounts[k1])
+				p.BackPack[int32(v1)] += int32(sevenDay.Rewardcounts[k1])
 			}
 		}
 	}
@@ -90,10 +92,131 @@ func (p *Player) StarsRankList(num int32) {
 	})
 }
 
-func (p *Player) AddProps(propId, propCounts int32) {
-	if propId == 100000 {
-		p.DbPlayer.Gold += propCounts
+// SwitchPlate 切换挡板
+func (p *Player) SwitchPlate(req *pb.SwitchBafflePlateReq) {
+	if _, has := p.BackPack[req.NewId]; has && p.BackPack[req.NewId] != 0 {
+		p.DbPlayer.CurrPlate = req.NewId
+		p.Agent.WriteMsg(&pb.SwitchBafflePlateRsp{
+			Code:        int32(pb.Error_No),
+			CurrPlateId: p.DbPlayer.CurrPlate,
+			Counts:      p.BackPack[req.NewId],
+		})
 	} else {
-		p.BackPack[propId] += propCounts
+		p.Agent.WriteMsg(&pb.SwitchBafflePlateRsp{Code: int32(pb.Error_Req)})
 	}
+}
+
+func (p *Player) GMEditor(cmd string) {
+	gmTp := cmd[:5]
+	switch gmTp {
+	case "props":
+		propId, _ := strconv.Atoi(cmd[5:11])
+		counts, _ := strconv.Atoi(cmd[11:])
+		p.BackPack[int32(propId)] += int32(counts)
+		p.Agent.WriteMsg(&pb.NoticePropsChange{Backpack: p.BackPack})
+	}
+}
+
+func (p *Player) ShopBuying(req *pb.ShopBuyingReq) {
+	index := common.GetCf(common.SHOP).Index(int(req.PropId))
+	if index == nil {
+		p.Agent.WriteMsg(&pb.ShopBuyingRsp{Code: int32(pb.Error_ReadConfigTable)})
+		return
+	}
+	shop := index.(*gamedata.Shop)
+	for k, v := range shop.Costid {
+		if p.BackPack[int32(v)] < int32(shop.Costnum[k]) {
+			p.Agent.WriteMsg(&pb.ShopBuyingRsp{Code: int32(pb.Error_Req)})
+			return
+		}
+	}
+	for k, v := range shop.Costid {
+		p.BackPack[int32(v)] -= int32(shop.Costnum[k])
+	}
+	rewards := make(map[int32]int32)
+	for k, v := range shop.Proptype {
+		rewards[int32(v)] += int32(shop.Propnum[k])
+		p.BackPack[int32(v)] += int32(shop.Propnum[k])
+	}
+	p.Agent.WriteMsg(&pb.ShopBuyingRsp{
+		Code:     int32(pb.Error_No),
+		BackPack: p.BackPack,
+		Rewards:  rewards,
+	})
+}
+
+// SettleRank 结算排行榜
+func SettleRank() {
+	db.DBRedis.Del("rank")
+	db.DBRedis.SUnionStore("rank", "stars")
+}
+
+// GetPersonalRank 获取结算名次
+func (p *Player) GetPersonalRank() {
+	list := db.GetYesterdayStarsRankList(-1)
+	tag := -1
+	for k, v := range list {
+		if v.Uid == p.DbPlayer.Uid {
+			tag = k
+			break
+		}
+	}
+	if tag >= 0 {
+		tag = tag + 1
+	}
+	p.Agent.WriteMsg(&pb.YesterdayRankRsp{
+		Code: int32(pb.Error_No),
+		Rank: int32(tag),
+	})
+}
+
+// YesterdayRankReward 领取昨日排行榜奖励
+func (p *Player) YesterdayRankReward() {
+	clock := util.GetZeroClock()
+	if p.DbPlayer.RankReceive > int32(clock) && p.DbPlayer.RankReceive < int32(clock)+24*3600 {
+		p.Agent.WriteMsg(&pb.ReceiveRankRewardRsp{Code: int32(pb.Error_Req)})
+	}
+	list := db.GetYesterdayStarsRankList(-1)
+	tag := -1
+	for k, v := range list {
+		if v.Uid == p.DbPlayer.Uid {
+			tag = k
+			break
+		}
+	}
+	if tag >= 0 {
+		tag = tag + 1
+	}
+	//读表发奖励
+	index := common.GetCf(common.RANK).Index(tag)
+	if index == nil {
+		p.Agent.WriteMsg(&pb.ReceiveRankRewardRsp{Code: int32(pb.Error_Req)})
+		return
+	}
+	rank := index.(*gamedata.Rank)
+	rewards := make(map[int32]int32)
+	for _, v := range rank.Rewards {
+		rewards[int32(v[0])] += int32(v[1])
+		p.BackPack[int32(v[0])] += int32(v[1])
+	}
+	p.DbPlayer.RankReceive = int32(time.Now().Unix())
+	p.Agent.WriteMsg(&pb.ReceiveRankRewardRsp{
+		Code:    int32(pb.Error_No),
+		Rewards: rewards,
+		RankTag: p.DbPlayer.RankReceive,
+	})
+}
+
+func (p *Player) WatchAdv(advId int) {
+	shop := common.GetCf(common.SHOP).Index(advId).(*gamedata.Shop)
+	rewards := make(map[int32]int32)
+	for k, v := range shop.Proptype {
+		rewards[int32(v)] += int32(shop.Propnum[k])
+		p.BackPack[int32(v)] += int32(shop.Propnum[k])
+	}
+	p.Agent.WriteMsg(&pb.WatchAdvRewardsRsp{
+		Code:     int32(pb.Error_No),
+		Rewards:  rewards,
+		Backpack: p.BackPack,
+	})
 }

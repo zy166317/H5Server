@@ -25,6 +25,8 @@ const (
 	BALL
 	BAFFLE
 	LOGIN_SEVEN_DAY
+	SHOP
+	RANK
 )
 
 // 配置注册初始化
@@ -38,6 +40,8 @@ func ConfigInit() {
 	RegisterCf(BALL, gamedata.Ball{})
 	RegisterCf(BAFFLE, gamedata.Baffle{})
 	RegisterCf(LOGIN_SEVEN_DAY, gamedata.Login_seven_day{})
+	RegisterCf(SHOP, gamedata.Shop{})
+	RegisterCf(RANK, gamedata.Rank{})
 }
 
 // @desc: 获取配置文件

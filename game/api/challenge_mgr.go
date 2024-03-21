@@ -27,3 +27,7 @@ func (cMgr *ChallengeManger) ChallengeChapter(p *Player, req *pb.ChallengeChapte
 func (cMgr *ChallengeManger) UseProps(p *Player, req *pb.UsePropsReq) {
 	p.ChallengeInfo.UseProps(p, req)
 }
+
+func (cMgr *ChallengeManger) CollectProps(p *Player, req *pb.GameCollectPropsReq) {
+	p.ChallengeInfo.CollectProps(p, req)
+}

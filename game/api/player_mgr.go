@@ -42,21 +42,24 @@ func (pMgr *PlayerManger) UserLogin(player *db.Player, a gate.Agent, req *pb.Log
 			BackPack:         newPlayer.BackPack,
 			CheckPointRecord: newPlayer.CheckPointRecords,
 			LoginDays:        newPlayer.LoginDay,
+			CurrPlate:        newPlayer.DbPlayer.CurrPlate,
 		},
 	})
 }
 
 func (pMgr *PlayerManger) CreateRole(req *pb.LoginReq, a gate.Agent) {
+	backpack := make(map[int32]int32)
+	backpack[120001] = -1
 	player := &db.Player{
 		Uid:              req.Uid,
-		BackPack:         util.ToString(make(map[int32]int32)),
-		Gold:             0,
+		BackPack:         util.ToString(backpack),
+		CurrPlate:        120001,
 		CheckPointRecord: util.ToString(make(map[int32]int32)),
 		LoginDays:        util.ToString(make([]int32, 0)),
 	}
 	err := db.DBC.Create(player).Error
 	if err != nil {
-		log.Release("创建角色失败", err)
+		log.Release("create role error ", err)
 		a.WriteMsg(&pb.LoginRsp{Code: int32(pb.Error_CreateRole)})
 		return
 	}
@@ -93,4 +96,28 @@ func (pMgr *PlayerManger) StarsRankList(p *Player, req *pb.StarsRankListReq) {
 
 func (pMgr *PlayerManger) SevenDaysLogin(p *Player) {
 	p.SevenDaysLogin()
+}
+
+func (pMgr *PlayerManger) SwitchPlate(p *Player, req *pb.SwitchBafflePlateReq) {
+	p.SwitchPlate(req)
+}
+
+func (pMgr *PlayerManger) GM(p *Player, req *pb.GMReq) {
+	p.GMEditor(req.Cmd)
+}
+
+func (pMgr *PlayerManger) ShopBuying(p *Player, req *pb.ShopBuyingReq) {
+	p.ShopBuying(req)
+}
+
+func (pMgr *PlayerManger) YesterdayRank(p *Player) {
+	p.GetPersonalRank()
+}
+
+func (pMgr *PlayerManger) YesterdayRankRewards(p *Player) {
+	p.YesterdayRankReward()
+}
+
+func (pMgr *PlayerManger) WatchAdv(p *Player, req *pb.WatchAdvRewardsReq) {
+	p.WatchAdv(int(req.AdvId))
 }

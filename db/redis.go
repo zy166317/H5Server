@@ -75,3 +75,16 @@ func UpdatePlayerStars(stars int, uid string) {
 	}
 	DBRedis.ZAdd("stars", rank...)
 }
+
+func GetYesterdayStarsRankList(num int64) []*RankInfo {
+	rankList := make([]*RankInfo, 0)
+	val := DBRedis.ZRevRangeWithScores("rank", 0, num).Val()
+	for _, v := range val {
+		bytes, _ := DBRedis.Get(v.Member.(string)).Bytes()
+		rankInfo := &RankInfo{}
+		json.Unmarshal(bytes, rankInfo)
+		rankInfo.Stars = int(v.Score)
+		rankList = append(rankList, rankInfo)
+	}
+	return rankList
+}

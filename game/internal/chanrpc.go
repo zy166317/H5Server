@@ -3,6 +3,7 @@ package internal
 import (
 	"github.com/name5566/leaf/gate"
 	"github.com/name5566/leaf/log"
+	"leaf_server/game/api"
 )
 
 func init() {
@@ -17,5 +18,8 @@ func rpcNewAgent(args []interface{}) {
 }
 
 func rpcCloseAgent(args []interface{}) {
+	a := args[0].(gate.Agent)
+	p := a.UserData().(*api.Player)
+	p.SaveData()
 	log.Debug("close agent")
 }

@@ -5,7 +5,7 @@ import (
 	"leaf_server/http/api"
 )
 
-// PaySuccessInfo eg:接收SDK支付成功通知
-func PaySuccessInfo(c *gin.Context) {
-	api.HandlePayReq(c)
+// GetUid eg:获取微信uid
+func GetUid(c *gin.Context) {
+	api.HandleGetUid(c)
 }

@@ -8,10 +8,10 @@ import (
 func InitHttpService(addr string) {
 	engine := gin.Default()
 	//路由分组
-	v1 := engine.Group("/pay")
+	v1 := engine.Group("/wx")
 	{
-		v1.POST("/Ping", func(context *gin.Context) {
-			gate.PaySuccessInfo(context)
+		v1.POST("/getUid", func(context *gin.Context) {
+			gate.GetUid(context)
 		})
 	}
 	//启动
